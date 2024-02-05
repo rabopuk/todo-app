@@ -1,7 +1,6 @@
 /* eslint-disable object-curly-spacing */
-import { bindEvents } from './listeners.js';
-import { createModal } from './modal.js';
-import { createTodoApp, renderTasks } from './render.js';
+import { createModal } from './modules/modal.js';
+import { createTodoApp, renderTasks } from './modules/render.js';
 
 let tasks = [];
 
@@ -19,12 +18,6 @@ const init = () => {
 
   const modal = createModal('Добро пожаловать в Todo App!');
   appContainer.append(modal);
-
-  const closeButton = modal.querySelector('.btn-close');
-  const form = modal.querySelector('form');
-  const input = form.querySelector('input');
-
-  bindEvents(modal, closeButton, form, input);
 };
 
 window.onload = init;

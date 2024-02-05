@@ -1,27 +1,54 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
+const headers = ['№', 'Задача', 'Статус', 'Действия'];
+
+export const createButton = (type, className, text) => {
+  const button = document.createElement('button');
+
+  button.type = type;
+  button.className = className;
+  button.textContent = text;
+
+  return button;
+};
+
+export const createInput = (type, className, placeholder) => {
+  const input = document.createElement('input');
+
+  input.type = type;
+  input.className = className;
+  input.placeholder = placeholder;
+
+  return input;
+};
+
+export const createLabel = (text, htmlFor) => {
+  const label = document.createElement('label');
+
+  label.textContent = text;
+  label.htmlFor = htmlFor;
+
+  return label;
+};
+
 const createForm = () => {
   const form = document.createElement('form');
   form.classList.add('d-flex', 'align-items-center', 'mb-3');
 
-  const label = document.createElement('label');
+  const label = createLabel('', 'task-input');
   label.classList.add('form-group', 'me-3', 'mb-0');
 
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.classList.add('form-control');
-  input.placeholder = 'ввести задачу';
+  const input = createInput('text', 'form-control', 'ввести задачу');
+  input.id = 'task-input';
   label.append(input);
 
-  const saveButton = document.createElement('button');
-  saveButton.type = 'submit';
-  saveButton.classList.add('btn', 'btn-primary', 'me-3');
-  saveButton.textContent = 'Сохранить';
+  const saveButton = createButton(
+    'submit',
+    'btn btn-primary me-3',
+    'Сохранить',
+  );
 
-  const clearButton = document.createElement('button');
-  clearButton.type = 'reset';
-  clearButton.classList.add('btn', 'btn-warning');
-  clearButton.textContent = 'Очистить';
+  const clearButton = createButton('reset', 'btn btn-warning', 'Очистить');
 
   form.append(label);
   form.append(saveButton);
@@ -39,22 +66,16 @@ const createTaskRow = (task, status, id) => {
     <td class="task">${task}</td>
     <td>${status}</td>
     <td>
-      <button class="btn btn-danger">
-        Удалить
-      </button>
-      <button class="btn btn-success">
-        Завершить
-      </button>
+      ${createButton('button', 'btn btn-danger', 'Удалить').outerHTML}
+      ${createButton('button', 'btn btn-success', 'Завершить').outerHTML}
     </td>
   `;
 
   return row;
 };
 
-const createTableHeaders = () => {
+const createTableHeaders = (headers) => {
   const tr = document.createElement('tr');
-
-  const headers = ['№', 'Задача', 'Статус', 'Действия'];
 
   headers.forEach(headerText => {
     const th = document.createElement('th');
@@ -73,8 +94,8 @@ const createTable = () => {
   table.classList.add('table', 'table-hover', 'table-bordered');
 
   const thead = document.createElement('thead');
-  const tr = createTableHeaders();
-  thead.append(tr);
+  const tableHeaders = createTableHeaders(headers);
+  thead.append(tableHeaders);
   table.append(thead);
 
   const tbody = document.createElement('tbody');
@@ -88,7 +109,6 @@ const createTable = () => {
 export const createTodoApp = () => {
   const todoApp = document.createElement('div');
   todoApp.classList.add(
-    'app-container',
     'vh-100',
     'w-100',
     'd-flex',
