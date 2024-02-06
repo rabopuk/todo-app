@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
-import { createButton, createInput, createLabel } from './render.js';
+import { createButton, createInput, createLabel } from './elements.js';
 
 export const createModal = (content) => {
   const modal = document.createElement('div');

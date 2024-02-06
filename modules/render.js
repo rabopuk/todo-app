@@ -1,145 +1,43 @@
-/* eslint-disable max-len */
-/* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
-const headers = ['№', 'Задача', 'Статус', 'Действия'];
+import { createTaskRow } from './elements.js';
 
-export const createButton = (type, className, id, text) => {
-  const button = document.createElement('button');
+export const addTaskRow = (task, rowIndex) => {
+  const table = document.querySelector('.table tbody');
+  const row = createTaskRow(task.task, task.status, rowIndex + 1, task.id);
 
-  button.type = type;
-  button.className = className;
-  button.id = id;
-  button.textContent = text;
-
-  return button;
+  table.append(row);
 };
 
-export const createInput = (type, className, placeholder) => {
-  const input = document.createElement('input');
+export const updateTaskRow = (taskId, status) => {
+  const row = document.querySelector(`.table tbody tr[data-id="${taskId}"]`);
+  const statusCell = row.children[2];
+  const taskCell = row.children[1];
 
-  input.type = type;
-  input.className = className;
-  input.placeholder = placeholder;
+  statusCell.textContent = status;
+  row.className = status === 'Выполнена' ? 'table-success' : 'table-light';
 
-  return input;
-};
-
-export const createLabel = (text, htmlFor) => {
-  const label = document.createElement('label');
-
-  label.textContent = text;
-  label.htmlFor = htmlFor;
-
-  return label;
-};
-
-const createForm = () => {
-  const form = document.createElement('form');
-  form.classList.add('d-flex', 'align-items-center', 'mb-3');
-
-  const label = createLabel('', 'task-input');
-  label.classList.add('form-group', 'me-3', 'mb-0');
-
-  const input = createInput('text', 'form-control', 'ввести задачу');
-  input.id = 'task-input';
-  label.append(input);
-
-  const saveButton = createButton(
-    'submit',
-    'btn btn-primary me-3',
-    'task-submit-button',
-    'Сохранить',
-  );
-
-  const clearButton = createButton('reset', 'btn btn-warning', 'clearBtn', 'Очистить');
-
-  form.append(label);
-  form.append(saveButton);
-  form.append(clearButton);
-
-  return { form, input, saveButton, clearButton };
-};
-
-const createTaskRow = (task, status, id, taskId) => {
-  const row = document.createElement('tr');
-  const taskCell = document.createElement('td');
-
-  taskCell.textContent = task;
   if (status === 'Выполнена') {
     taskCell.style.textDecoration = 'line-through';
+  } else {
+    taskCell.style.textDecoration = 'none';
   }
-
-  row.className = status === 'Выполнена' ? 'table-success' : 'table-light';
-  row.dataset.id = taskId; // сохраняем id задачи
-  row.innerHTML = `
-    <td>${id}</td>
-    <td>${status}</td>
-    <td>
-      ${createButton('button', 'btn btn-danger', '', 'Удалить').outerHTML}
-      ${createButton('button', 'btn btn-success', '', 'Завершить').outerHTML}
-    </td>
-  `;
-
-  row.insertBefore(taskCell, row.children[1]);
-
-  return row;
 };
 
-const createTableHeaders = (headers) => {
-  const tr = document.createElement('tr');
+export const updateRowNumbers = () => {
+  const table = document.querySelector('.table tbody');
 
-  headers.forEach(headerText => {
-    const th = document.createElement('th');
-    th.textContent = headerText;
-    tr.append(th);
+  [...table.children].forEach((row, index) => {
+    const idCell = row.children[0];
+
+    idCell.textContent = index + 1;
   });
-
-  return tr;
 };
 
-const createTable = () => {
-  const tableWrapper = document.createElement('div');
-  tableWrapper.classList.add('table-wrapper');
+export const deleteTaskRow = (taskId) => {
+  const row = document.querySelector(`.table tbody tr[data-id="${taskId}"]`);
+  row.remove();
 
-  const table = document.createElement('table');
-  table.classList.add('table', 'table-hover', 'table-bordered');
-
-  const thead = document.createElement('thead');
-  const tableHeaders = createTableHeaders(headers);
-  thead.append(tableHeaders);
-  table.append(thead);
-
-  const tbody = document.createElement('tbody');
-  table.append(tbody);
-
-  tableWrapper.append(table);
-
-  return tableWrapper;
-};
-
-export const createTodoApp = () => {
-  const todoApp = document.createElement('div');
-  todoApp.classList.add(
-    'vh-100',
-    'w-100',
-    'd-flex',
-    'align-items-center',
-    'justify-content-center',
-    'flex-column',
-  );
-
-  const heading = document.createElement('h3');
-  heading.id = 'app-title';
-  heading.textContent = 'Todo App';
-  todoApp.append(heading);
-
-  const formElements = createForm();
-  todoApp.append(formElements.form);
-
-  const table = createTable();
-  todoApp.append(table);
-
-  return { todoApp, form: formElements.form, input: formElements.input };
+  updateRowNumbers();
 };
 
 export const renderTasks = (tasks) => {

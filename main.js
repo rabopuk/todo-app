@@ -1,8 +1,9 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
+import { createTodoApp } from './modules/elements.js';
 import { bindEvents } from './modules/listeners.js';
 import { createModal } from './modules/modal.js';
-import { createTodoApp, renderTasks } from './modules/render.js';
+import { renderTasks } from './modules/render.js';
 import {
   getCurrentUser,
   getTasks,

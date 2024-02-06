@@ -3,7 +3,7 @@
 /* eslint-disable object-curly-spacing */
 import { addTask, completeTask, deleteTask } from './control.js';
 import { closeModal } from './modal.js';
-import { renderTasks } from './render.js';
+import { addTaskRow, deleteTaskRow, renderTasks, updateRowNumbers, updateTaskRow } from './render.js';
 import {
   getCurrentUser,
   getTasks,
@@ -56,29 +56,42 @@ const handleTaskSubmit = (e, taskInput, taskSubmitButton) => {
   if (taskInput.value.trim() !== '') {
     const taskText = taskInput.value.trim();
 
-    saveTasks(username, addTask(taskText));
+    const tasks = addTask(taskText);
+
+    saveTasks(username, tasks);
+
     taskInput.value = '';
-    renderTasks(getTasks(username));
+
+    const newTask = tasks[tasks.length - 1];
+
+    addTaskRow(newTask, tasks.length);
+    updateRowNumbers();
     handleTaskInput({ target: taskInput }, taskSubmitButton);
   }
 };
 
-const handleTaskComplete = (e) => {
+const handleTaskComplete = e => {
   e.stopPropagation();
 
-  const taskId = e.target.closest('.table-light, .table-success').dataset.id;
+  const row = e.target.closest('.table-light, .table-success');
+  const taskId = row.dataset.id;
 
-  completeTask(taskId);
-  renderTasks(getTasks(getCurrentUser()));
+  const updatedTask = completeTask(taskId);
+  updateTaskRow(taskId, updatedTask.status);
+
+  const button = row.querySelector('.btn-success');
+  button.textContent = updatedTask.status === 'Выполнена' ?
+    'Отменить' :
+    'Завершить';
 };
 
-const handleTaskDelete = (e) => {
+const handleTaskDelete = e => {
   e.stopPropagation();
 
   const taskId = e.target.closest('.table-light, .table-success').dataset.id;
 
   deleteTask(taskId);
-  renderTasks(getTasks(getCurrentUser()));
+  deleteTaskRow(taskId);
 };
 
 const addEventListener = (element, eventType, handler) =>

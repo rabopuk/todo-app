@@ -20,14 +20,18 @@ export const addTask = task => {
   return tasks;
 };
 
-export const completeTask = id => {
-  const username = getCurrentUser();
-  let tasks = getTasks(username);
+export const completeTask = (taskId) => {
+  const tasks = getTasks(getCurrentUser());
+  const taskIndex = tasks.findIndex(task => task.id === taskId);
 
-  tasks = tasks.map(task =>
-    (task.id === id ? { ...task, status: 'Выполнена' } : task));
+  if (taskIndex !== -1) {
+    tasks[taskIndex].status = tasks[taskIndex].status === 'Выполнена' ?
+      'Не выполнена' :
+      'Выполнена';
 
-  saveTasks(username, tasks);
+    saveTasks(getCurrentUser(), tasks);
+    return tasks[taskIndex];
+  }
 };
 
 export const deleteTask = id => {
