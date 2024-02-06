@@ -30,6 +30,3 @@ export const addTaskToStorage = (username, task) => {
   tasks.push(task);
   saveTasks(username, tasks);
 };
-
-export const generateId = () =>
-  Math.random().toString().substring(2, 10);

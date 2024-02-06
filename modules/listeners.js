@@ -28,6 +28,10 @@ const handleEscapeKey = (e, modal) => {
   }
 };
 
+const handleTaskInput = (e, taskSubmitButton) => {
+  taskSubmitButton.disabled = !e.target.value.trim();
+};
+
 const handleNameSubmit = (e, nameInput, modal) => {
   e.preventDefault();
 
@@ -44,7 +48,7 @@ const handleNameSubmit = (e, nameInput, modal) => {
   }
 };
 
-const handleTaskSubmit = (e, taskInput) => {
+const handleTaskSubmit = (e, taskInput, taskSubmitButton) => {
   e.preventDefault();
 
   const username = getCurrentUser();
@@ -55,6 +59,7 @@ const handleTaskSubmit = (e, taskInput) => {
     saveTasks(username, addTask(taskText));
     taskInput.value = '';
     renderTasks(getTasks(username));
+    handleTaskInput({ target: taskInput }, taskSubmitButton);
   }
 };
 
@@ -82,23 +87,28 @@ const addEventListener = (element, eventType, handler) =>
 export const bindEvents = (
   modal,
   closeButton,
-  nameInput,
   taskInput,
-  taskElements,
+  nameInput,
   nameSubmitButton,
   taskSubmitButton,
 ) => {
-  addEventListener(modal, 'click', e => handleModalClick(e, modal));
+  addEventListener(modal, 'click', e =>
+    handleModalClick(e, modal));
 
-  addEventListener(closeButton, 'click', e => handleCloseButtonClick(e, modal));
+  addEventListener(closeButton, 'click', e =>
+    handleCloseButtonClick(e, modal));
+
+  addEventListener(document, 'keydown', e =>
+    handleEscapeKey(e, modal));
+
+  addEventListener(taskInput, 'input', e =>
+    handleTaskInput(e, taskSubmitButton));
 
   addEventListener(nameSubmitButton, 'click', e =>
     handleNameSubmit(e, nameInput, modal));
 
   addEventListener(taskSubmitButton, 'click', e =>
-    handleTaskSubmit(e, taskInput));
-
-  addEventListener(document, 'keydown', e => handleEscapeKey(e, modal));
+    handleTaskSubmit(e, taskInput, taskSubmitButton));
 
   addEventListener(document, 'click', e => {
     if (e.target.classList.contains('btn-success')) {
@@ -111,4 +121,6 @@ export const bindEvents = (
       handleTaskDelete(e, taskId);
     }
   });
+
+  handleTaskInput({ target: taskInput }, taskSubmitButton);
 };

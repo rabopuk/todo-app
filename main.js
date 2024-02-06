@@ -26,17 +26,14 @@ const init = () => {
   const closeButton = document.querySelector('.btn-close');
   const nameInput = document.querySelector('#name');
   const taskInput = document.querySelector('#task-input');
-  const taskElements = Array.from(
-    document.querySelectorAll('.table-light, .table-success'));
   const nameSubmitButton = document.querySelector('#name-submit-button');
   const taskSubmitButton = document.querySelector('#task-submit-button');
 
   bindEvents(
     modal,
     closeButton,
-    nameInput,
     taskInput,
-    taskElements,
+    nameInput,
     nameSubmitButton,
     taskSubmitButton,
   );

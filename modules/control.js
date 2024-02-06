@@ -1,5 +1,6 @@
 /* eslint-disable object-curly-spacing */
-import { generateId, getCurrentUser, getTasks, saveTasks } from './storage.js';
+import { getCurrentUser, getTasks, saveTasks } from './storage.js';
+import { generateId } from './utils.js';
 
 const TASK_STATUSES = ['Не выполнена', 'Выполнена'];
 

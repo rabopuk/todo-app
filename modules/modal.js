@@ -51,7 +51,7 @@ export const createModal = (content) => {
   formGroup.append(input);
 
   const submitButton = createButton(
-    'button',
+    'submit',
     'btn btn-primary mt-3',
     'name-submit-button',
     'Подтвердить',
