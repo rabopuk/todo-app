@@ -1,12 +1,14 @@
+/* eslint-disable max-len */
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 const headers = ['№', 'Задача', 'Статус', 'Действия'];
 
-export const createButton = (type, className, text) => {
+export const createButton = (type, className, id, text) => {
   const button = document.createElement('button');
 
   button.type = type;
   button.className = className;
+  button.id = id;
   button.textContent = text;
 
   return button;
@@ -45,31 +47,40 @@ const createForm = () => {
   const saveButton = createButton(
     'submit',
     'btn btn-primary me-3',
+    'task-submit-button',
     'Сохранить',
   );
 
-  const clearButton = createButton('reset', 'btn btn-warning', 'Очистить');
+  const clearButton = createButton('reset', 'btn btn-warning', 'clearBtn', 'Очистить');
 
   form.append(label);
   form.append(saveButton);
   form.append(clearButton);
 
-  return form;
+  return { form, input, saveButton, clearButton };
 };
 
 const createTaskRow = (task, status, id) => {
   const row = document.createElement('tr');
+  const taskCell = document.createElement('td');
+
+  taskCell.textContent = task;
+  if (status === 'Выполнена') {
+    taskCell.style.textDecoration = 'line-through';
+  }
 
   row.className = status === 'Выполнена' ? 'table-success' : 'table-light';
+  row.dataset.id = id;
   row.innerHTML = `
     <td>${id}</td>
-    <td class="task">${task}</td>
     <td>${status}</td>
     <td>
-      ${createButton('button', 'btn btn-danger', 'Удалить').outerHTML}
-      ${createButton('button', 'btn btn-success', 'Завершить').outerHTML}
+      ${createButton('button', 'btn btn-danger', 'delTaskBtn', 'Удалить').outerHTML}
+      ${createButton('button', 'btn btn-success', 'finTaskBtn', 'Завершить').outerHTML}
     </td>
   `;
+
+  row.insertBefore(taskCell, row.children[1]);
 
   return row;
 };
@@ -118,16 +129,17 @@ export const createTodoApp = () => {
   );
 
   const heading = document.createElement('h3');
+  heading.id = 'app-title';
   heading.textContent = 'Todo App';
   todoApp.append(heading);
 
-  const form = createForm();
-  todoApp.append(form);
+  const formElements = createForm();
+  todoApp.append(formElements.form);
 
   const table = createTable();
   todoApp.append(table);
 
-  return todoApp;
+  return { todoApp, form: formElements.form, input: formElements.input };
 };
 
 export const renderTasks = (tasks) => {

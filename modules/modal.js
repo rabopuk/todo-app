@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
-import { bindEvents } from './listeners.js';
 import { createButton, createInput, createLabel } from './render.js';
 
 export const createModal = (content) => {
@@ -52,13 +51,12 @@ export const createModal = (content) => {
   formGroup.append(input);
 
   const submitButton = createButton(
-    'submit',
+    'button',
     'btn btn-primary mt-3',
+    'name-submit-button',
     'Подтвердить',
   );
   formGroup.append(submitButton);
-
-  bindEvents(modal, closeButton, form, input);
 
   return modal;
 };
