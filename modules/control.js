@@ -1,5 +1,6 @@
 /* eslint-disable object-curly-spacing */
 import { generateId, getCurrentUser, getTasks, saveTasks } from './storage.js';
+
 const TASK_STATUSES = ['Не выполнена', 'Выполнена'];
 
 export const addTask = task => {
@@ -20,14 +21,12 @@ export const addTask = task => {
 
 export const completeTask = id => {
   const username = getCurrentUser();
-  const tasks = getTasks(username);
+  let tasks = getTasks(username);
 
-  const task = tasks.find(task => task.id === id);
+  tasks = tasks.map(task =>
+    (task.id === id ? { ...task, status: 'Выполнена' } : task));
 
-  if (task) {
-    task.status = TASK_STATUSES[1];
-    saveTasks(username, tasks);
-  }
+  saveTasks(username, tasks);
 };
 
 export const deleteTask = id => {

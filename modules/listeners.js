@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 import { addTask, completeTask, deleteTask } from './control.js';
@@ -19,8 +20,12 @@ const handleModalClick = (e, modal) => {
 const handleCloseButtonClick = (e, modal) => {
   e.stopPropagation();
   closeModal(modal);
-  setCurrentUser('default');
-  saveTasks('default', []);
+};
+
+const handleEscapeKey = (e, modal) => {
+  if (e.key === 'Escape') {
+    closeModal(modal);
+  }
 };
 
 const handleNameSubmit = (e, nameInput, modal) => {
@@ -36,9 +41,6 @@ const handleNameSubmit = (e, nameInput, modal) => {
 
     renderTasks(getTasks(username));
     closeModal(modal);
-  } else {
-    setCurrentUser('default');
-    saveTasks('default', []);
   }
 };
 
@@ -56,22 +58,22 @@ const handleTaskSubmit = (e, taskInput) => {
   }
 };
 
-const handleTaskComplete = (e, taskId) => {
-  if (e.target.classList.contains('btn-success')) {
-    completeTask(taskId);
-  }
+const handleTaskComplete = (e) => {
+  e.stopPropagation();
+
+  const taskId = e.target.closest('.table-light, .table-success').dataset.id;
+
+  completeTask(taskId);
+  renderTasks(getTasks(getCurrentUser()));
 };
 
-const handleTaskDelete = (e, taskId) => {
-  if (e.target.classList.contains('btn-danger')) {
-    deleteTask(taskId);
-  }
-};
+const handleTaskDelete = (e) => {
+  e.stopPropagation();
 
-const handleEscapeKey = (e, modal) => {
-  if (e.key === 'Escape') {
-    closeModal(modal);
-  }
+  const taskId = e.target.closest('.table-light, .table-success').dataset.id;
+
+  deleteTask(taskId);
+  renderTasks(getTasks(getCurrentUser()));
 };
 
 const addEventListener = (element, eventType, handler) =>
@@ -85,7 +87,6 @@ export const bindEvents = (
   taskElements,
   nameSubmitButton,
   taskSubmitButton,
-  username,
 ) => {
   addEventListener(modal, 'click', e => handleModalClick(e, modal));
 
@@ -99,9 +100,15 @@ export const bindEvents = (
 
   addEventListener(document, 'keydown', e => handleEscapeKey(e, modal));
 
-  taskElements.forEach(taskElement => {
-    const taskId = taskElement.dataset.id;
-    addEventListener(taskElement, 'click', e => handleTaskComplete(e, taskId));
-    addEventListener(taskElement, 'click', e => handleTaskDelete(e, taskId));
+  addEventListener(document, 'click', e => {
+    if (e.target.classList.contains('btn-success')) {
+      const taskId = e.target.closest('.table-light, .table-success').dataset.id;
+      handleTaskComplete(e, taskId);
+    }
+
+    if (e.target.classList.contains('btn-danger')) {
+      const taskId = e.target.closest('.table-light, .table-success').dataset.id;
+      handleTaskDelete(e, taskId);
+    }
   });
 };

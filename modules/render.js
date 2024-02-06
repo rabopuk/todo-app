@@ -60,7 +60,7 @@ const createForm = () => {
   return { form, input, saveButton, clearButton };
 };
 
-const createTaskRow = (task, status, id) => {
+const createTaskRow = (task, status, id, taskId) => {
   const row = document.createElement('tr');
   const taskCell = document.createElement('td');
 
@@ -70,13 +70,13 @@ const createTaskRow = (task, status, id) => {
   }
 
   row.className = status === 'Выполнена' ? 'table-success' : 'table-light';
-  row.dataset.id = id;
+  row.dataset.id = taskId; // сохраняем id задачи
   row.innerHTML = `
     <td>${id}</td>
     <td>${status}</td>
     <td>
-      ${createButton('button', 'btn btn-danger', 'delTaskBtn', 'Удалить').outerHTML}
-      ${createButton('button', 'btn btn-success', 'finTaskBtn', 'Завершить').outerHTML}
+      ${createButton('button', 'btn btn-danger', '', 'Удалить').outerHTML}
+      ${createButton('button', 'btn btn-success', '', 'Завершить').outerHTML}
     </td>
   `;
 
@@ -147,7 +147,7 @@ export const renderTasks = (tasks) => {
 
   table.innerHTML = '';
   tasks.forEach((task, index) => {
-    const row = createTaskRow(task.task, task.status, index + 1);
+    const row = createTaskRow(task.task, task.status, index + 1, task.id);
     table.append(row);
   });
 };
