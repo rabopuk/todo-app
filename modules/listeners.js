@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
+import { getElements } from './DOM.js';
 import { addTask, completeTask, deleteTask } from './control.js';
 import { buttonLabels } from './elements.js';
 import { closeModal } from './modal.js';
@@ -50,7 +51,7 @@ const handleNameSubmit = (e, nameInput, modal) => {
 
     setCurrentUser(username);
 
-    const appTitle = document.getElementById('app-title');
+    const { appTitle } = getElements();
     appTitle.textContent = `Привет, ${username}! Твой список дел:`;
 
     renderTasks(getTasks(username));

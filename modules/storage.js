@@ -10,13 +10,13 @@ export const getUserData = (inputValue) => {
   return username ? JSON.parse(username) : [];
 };
 
-export const setCurrentUser = (username) => {
+export const setCurrentUser = (username = 'default') => {
   localStorage.setItem('currentUser', username);
 };
 
 export const getCurrentUser = () => localStorage.getItem('currentUser');
 
-export const saveTasks = (username, tasks) => {
+export const saveTasks = (username = getCurrentUser(), tasks = []) => {
   localStorage.setItem(username, JSON.stringify(tasks));
 };
 

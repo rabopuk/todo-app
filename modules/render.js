@@ -1,8 +1,9 @@
 /* eslint-disable object-curly-spacing */
+import { getElements } from './DOM.js';
 import { createTaskRow } from './elements.js';
 
 export const addTaskRow = (task, rowIndex) => {
-  const table = document.querySelector('.table tbody');
+  const { table } = getElements();
   const row = createTaskRow(task.task, task.status, rowIndex + 1, task.id);
 
   table.append(row);
@@ -26,7 +27,7 @@ export const updateTaskRow = (taskId, status) => {
 };
 
 export const updateRowNumbers = () => {
-  const table = document.querySelector('.table tbody');
+  const { table } = getElements();
 
   [...table.children].forEach((row, index) => {
     const idCell = row.children[0];
@@ -43,13 +44,12 @@ export const deleteTaskRow = (taskId) => {
 };
 
 export const renderTasks = (tasks) => {
-  const table = document.querySelector('.table tbody');
+  const { table } = getElements();
 
   table.innerHTML = '';
 
-  tasks.forEach((task, index) => {
-    const row = createTaskRow(task.task, task.status, index + 1, task.id);
+  const rows = tasks.map((task, index) =>
+    createTaskRow(task.task, task.status, index + 1, task.id));
 
-    table.append(row);
-  });
+  table.append(...rows);
 };

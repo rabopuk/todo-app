@@ -3,11 +3,17 @@
 /* eslint-disable object-curly-spacing */
 export const buttonLabels = ['Удалить', 'Завершить', 'Отменить', 'Редактировать'];
 
+const createElementWithClass = (type, className) => {
+  const element = document.createElement(type);
+  element.className = className;
+
+  return element;
+};
+
 export const createButton = (type, className, id, text) => {
-  const button = document.createElement('button');
+  const button = createElementWithClass('button', className);
 
   button.type = type;
-  button.className = className;
   button.id = id;
   button.textContent = text;
 
@@ -15,17 +21,16 @@ export const createButton = (type, className, id, text) => {
 };
 
 export const createInput = (type, className, placeholder) => {
-  const input = document.createElement('input');
+  const input = createElementWithClass('input', className);
 
   input.type = type;
-  input.className = className;
   input.placeholder = placeholder;
 
   return input;
 };
 
 export const createLabel = (text, htmlFor) => {
-  const label = document.createElement('label');
+  const label = createElementWithClass('label', '');
 
   label.textContent = text;
   label.htmlFor = htmlFor;
@@ -34,14 +39,13 @@ export const createLabel = (text, htmlFor) => {
 };
 
 const createSelect = () => {
-  const select = document.createElement('select');
-  select.className = 'form-select me-3 col';
+  const select = createElementWithClass('select', 'form-select me-3 col');
 
   const options = ['Обычная', 'Важная', 'Срочная'];
   const classes = ['table-light', 'table-warning', 'table-danger'];
 
   options.forEach((option, index) => {
-    const opt = document.createElement('option');
+    const opt = createElementWithClass('option', '');
 
     opt.value = classes[index];
     opt.textContent = option;
@@ -53,8 +57,7 @@ const createSelect = () => {
 };
 
 const createForm = () => {
-  const form = document.createElement('form');
-  form.classList.add('d-flex', 'align-items-center', 'mb-3');
+  const form = createElementWithClass('form', 'd-flex align-items-center mb-3');
 
   const label = createLabel('', 'task-input');
   label.classList.add('form-group', 'me-3', 'mb-0');
@@ -88,8 +91,8 @@ const createForm = () => {
 };
 
 export const createTaskRow = (task, status, id, taskId) => {
-  const row = document.createElement('tr');
-  const taskCell = document.createElement('td');
+  const row = createElementWithClass('tr', status === 'Выполнена' ? 'table-success' : 'table-light');
+  const taskCell = createElementWithClass('td', '');
 
   taskCell.textContent = task;
   taskCell.contentEditable = 'false';
@@ -98,7 +101,6 @@ export const createTaskRow = (task, status, id, taskId) => {
     taskCell.style.textDecoration = 'line-through';
   }
 
-  row.className = status === 'Выполнена' ? 'table-success' : 'table-light';
   row.dataset.id = taskId;
 
   const deleteButton = createButton('button', 'btn btn-danger', '', buttonLabels[0]);
@@ -128,10 +130,10 @@ export const createTaskRow = (task, status, id, taskId) => {
 };
 
 const createTableHeaders = (headers) => {
-  const tr = document.createElement('tr');
+  const tr = createElementWithClass('tr', '');
 
   headers.forEach(headerText => {
-    const th = document.createElement('th');
+    const th = createElementWithClass('th', '');
     th.textContent = headerText;
     tr.append(th);
   });
@@ -142,18 +144,16 @@ const createTableHeaders = (headers) => {
 const createTable = () => {
   const headers = ['№', 'Задача', 'Статус', 'Действия'];
 
-  const tableWrapper = document.createElement('div');
-  tableWrapper.classList.add('table-wrapper');
+  const tableWrapper = createElementWithClass('div', 'table-wrapper');
 
-  const table = document.createElement('table');
-  table.classList.add('table', 'table-hover', 'table-bordered');
+  const table = createElementWithClass('table', 'table table-hover table-bordered');
 
-  const thead = document.createElement('thead');
+  const thead = createElementWithClass('thead', '');
   const tableHeaders = createTableHeaders(headers);
   thead.append(tableHeaders);
   table.append(thead);
 
-  const tbody = document.createElement('tbody');
+  const tbody = createElementWithClass('tbody', '');
   table.append(tbody);
 
   tableWrapper.append(table);
@@ -162,17 +162,8 @@ const createTable = () => {
 };
 
 export const createTodoApp = () => {
-  const todoApp = document.createElement('div');
-  todoApp.classList.add(
-    'vh-100',
-    'w-100',
-    'd-flex',
-    'align-items-center',
-    'justify-content-center',
-    'flex-column',
-  );
-
-  const heading = document.createElement('h3');
+  const todoApp = createElementWithClass('div', 'vh-100 w-100 d-flex align-items-center justify-content-center flex-column');
+  const heading = createElementWithClass('h3', '');
   heading.id = 'app-title';
   heading.textContent = 'Todo App';
   todoApp.append(heading);

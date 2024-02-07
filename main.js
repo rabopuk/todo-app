@@ -1,5 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
+import { getElements } from './modules/DOM.js';
 import { createTodoApp } from './modules/elements.js';
 import { bindEvents } from './modules/listeners.js';
 import { createModal } from './modules/modal.js';
@@ -12,25 +13,27 @@ import {
 } from './modules/storage.js';
 
 const init = () => {
-  const appContainer = document.querySelector('.app-container');
+  setCurrentUser();
+  saveTasks();
+
   const { todoApp } = createTodoApp();
+  const { appContainer } = getElements();
   appContainer.append(todoApp);
-
-  setCurrentUser('default');
-  saveTasks('default', []);
-
-  renderTasks(getTasks(getCurrentUser()));
 
   const modal = createModal('Добро пожаловать в Todo App!');
   appContainer.append(modal);
 
-  const closeButton = document.querySelector('.btn-close');
-  const nameInput = document.querySelector('#name');
-  const taskInput = document.querySelector('#task-input');
-  const nameSubmitButton = document.querySelector('#name-submit-button');
-  const taskSubmitButton = document.querySelector('#task-submit-button');
-  const clearButton = document.getElementById('clearBtn');
-  const taskSelect = document.querySelector('.form-select');
+  const {
+    closeButton,
+    nameInput,
+    taskInput,
+    nameSubmitButton,
+    taskSubmitButton,
+    clearButton,
+    taskSelect,
+  } = getElements();
+
+  renderTasks(getTasks(getCurrentUser()));
 
   bindEvents(
     modal,
