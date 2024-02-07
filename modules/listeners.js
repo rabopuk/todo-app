@@ -58,12 +58,15 @@ const handleNameSubmit = (e, nameInput, modal) => {
   }
 };
 
-const handleTaskSubmit = (e, taskInput, taskSubmitButton) => {
+const handleTaskSelect = (e, taskSelect) =>
+  taskSelect.options[taskSelect.selectedIndex].value;
+
+const handleTaskSubmit = (e, taskInput, taskSubmitButton, taskSelect) => {
   e.preventDefault();
 
   const username = getCurrentUser();
 
-  if (taskInput.value.trim() !== '') {
+  if (taskInput.value.trim()) {
     const taskText = taskInput.value.trim();
     const tasks = addTask(taskText);
 
@@ -73,7 +76,10 @@ const handleTaskSubmit = (e, taskInput, taskSubmitButton) => {
 
     const newTask = tasks[tasks.length - 1];
 
-    addTaskRow(newTask, tasks.length);
+    const newTaskRow = addTaskRow(newTask, tasks.length);
+    const select = handleTaskSelect(e, taskSelect);
+    console.log('select: ', select);
+    newTaskRow.className = select;
     updateRowNumbers();
     handleTaskInput({ target: taskInput }, taskSubmitButton);
   }
@@ -82,7 +88,7 @@ const handleTaskSubmit = (e, taskInput, taskSubmitButton) => {
 const handleTaskComplete = e => {
   e.stopPropagation();
 
-  const row = e.target.closest('.table-light, .table-success');
+  const row = e.target.closest('.table-light, .table-success, .table-warning, .table-danger');
   const taskId = row.dataset.id;
   const updatedTask = completeTask(taskId);
 
@@ -101,7 +107,7 @@ const handleTaskEdit = e => {
 
   e.stopPropagation();
 
-  const row = e.target.closest('.table-light, .table-success');
+  const row = e.target.closest('.table-light, .table-success, .table-warning, .table-danger');
   const taskId = row.dataset.id;
   const taskCell = row.querySelector('td:nth-child(2)');
 
@@ -129,7 +135,8 @@ const handleTaskEdit = e => {
 const handleTaskDelete = e => {
   e.stopPropagation();
 
-  const taskId = e.target.closest('.table-light, .table-success').dataset.id;
+  const row = e.target.closest('.table-light, .table-success, .table-warning, .table-danger');
+  const taskId = row.dataset.id;
   const userConfirmed = confirm('Вы уверены, что хотите удалить эту задачу?');
 
   if (userConfirmed) {
@@ -149,6 +156,7 @@ export const bindEvents = (
   nameSubmitButton,
   taskSubmitButton,
   clearButton,
+  taskSelect,
 ) => {
   addEventListener(modal, 'click', e =>
     handleModalClick(e, modal));
@@ -159,26 +167,26 @@ export const bindEvents = (
   addEventListener(document, 'keydown', e =>
     handleEscapeKey(e, modal));
 
+  addEventListener(nameSubmitButton, 'click', e =>
+    handleNameSubmit(e, nameInput, modal));
+
   addEventListener(taskInput, 'input', e =>
     handleTaskInput(e, taskSubmitButton));
 
   addEventListener(clearButton, 'click', e =>
     handleClearButton(e, taskInput, taskSubmitButton));
 
-  addEventListener(nameSubmitButton, 'click', e =>
-    handleNameSubmit(e, nameInput, modal));
-
   addEventListener(taskSubmitButton, 'click', e =>
-    handleTaskSubmit(e, taskInput, taskSubmitButton));
+    handleTaskSubmit(e, taskInput, taskSubmitButton, taskSelect));
 
   addEventListener(document, 'click', e => {
     if (e.target.classList.contains('btn-success')) {
-      const taskId = e.target.closest('.table-light, .table-success').dataset.id;
+      const taskId = e.target.closest('.table-light, .table-success, .table-warning, .table-danger').dataset.id;
       handleTaskComplete(e, taskId);
     }
 
     if (e.target.classList.contains('btn-danger')) {
-      const taskId = e.target.closest('.table-light, .table-success').dataset.id;
+      const taskId = e.target.closest('.table-light, .table-success, .table-warning, .table-danger').dataset.id;
       handleTaskDelete(e, taskId);
     }
 

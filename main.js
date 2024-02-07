@@ -30,6 +30,7 @@ const init = () => {
   const nameSubmitButton = document.querySelector('#name-submit-button');
   const taskSubmitButton = document.querySelector('#task-submit-button');
   const clearButton = document.getElementById('clearBtn');
+  const taskSelect = document.querySelector('.form-select');
 
   bindEvents(
     modal,
@@ -39,6 +40,7 @@ const init = () => {
     nameSubmitButton,
     taskSubmitButton,
     clearButton,
+    taskSelect,
   );
 };
 

@@ -6,6 +6,8 @@ export const addTaskRow = (task, rowIndex) => {
   const row = createTaskRow(task.task, task.status, rowIndex + 1, task.id);
 
   table.append(row);
+
+  return row;
 };
 
 export const updateTaskRow = (taskId, status) => {

@@ -43,10 +43,10 @@ export const createModal = (content) => {
   formGroup.className = 'mb-3';
   form.append(formGroup);
 
-  const label = createLabel('Введите ваше имя', 'name');
+  const label = createLabel('Введите ваше имя:', 'name');
   formGroup.append(label);
 
-  const input = createInput('text', 'form-control', 'Введите ваше имя');
+  const input = createInput('text', 'form-control', 'Имя');
   input.id = 'name';
   formGroup.append(input);
 

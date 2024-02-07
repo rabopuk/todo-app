@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
-const headers = ['№', 'Задача', 'Статус', 'Действия'];
 export const buttonLabels = ['Удалить', 'Завершить', 'Отменить', 'Редактировать'];
 
 export const createButton = (type, className, id, text) => {
@@ -34,6 +33,25 @@ export const createLabel = (text, htmlFor) => {
   return label;
 };
 
+const createSelect = () => {
+  const select = document.createElement('select');
+  select.className = 'form-select me-3 col';
+
+  const options = ['Обычная', 'Важная', 'Срочная'];
+  const classes = ['table-light', 'table-warning', 'table-danger'];
+
+  options.forEach((option, index) => {
+    const opt = document.createElement('option');
+
+    opt.value = classes[index];
+    opt.textContent = option;
+
+    select.append(opt);
+  });
+
+  return select;
+};
+
 const createForm = () => {
   const form = document.createElement('form');
   form.classList.add('d-flex', 'align-items-center', 'mb-3');
@@ -62,6 +80,9 @@ const createForm = () => {
   form.append(label);
   form.append(saveButton);
   form.append(clearButton);
+
+  const select = createSelect();
+  form.insertBefore(select, saveButton);
 
   return { form, input, saveButton, clearButton };
 };
@@ -119,6 +140,8 @@ const createTableHeaders = (headers) => {
 };
 
 const createTable = () => {
+  const headers = ['№', 'Задача', 'Статус', 'Действия'];
+
   const tableWrapper = document.createElement('div');
   tableWrapper.classList.add('table-wrapper');
 
