@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 import { getElements } from './DOM.js';
-import { addTask, completeTask, deleteTask } from './control.js';
+import { IMPORTANCE_CLASSES, TASK_IMPORTANCES, addTask, completeTask, deleteTask } from './control.js';
 import { buttonLabels } from './elements.js';
 import { closeModal } from './modal.js';
 import { addTaskRow, deleteTaskRow, renderTasks, updateRowNumbers, updateTaskRow } from './render.js';
@@ -59,8 +59,13 @@ const handleNameSubmit = (e, nameInput, modal) => {
   }
 };
 
-const handleTaskSelect = (e, taskSelect) =>
-  taskSelect.options[taskSelect.selectedIndex].value;
+const handleTaskSelect = (e, taskSelect) => {
+  const selectedOption = taskSelect.options[taskSelect.selectedIndex];
+  const importance = Object.keys(IMPORTANCE_CLASSES).find(key =>
+    IMPORTANCE_CLASSES[key] === selectedOption.value);
+
+  return importance || TASK_IMPORTANCES[0];
+};
 
 const handleTaskSubmit = (e, taskInput, taskSubmitButton, taskSelect) => {
   e.preventDefault();
@@ -69,18 +74,18 @@ const handleTaskSubmit = (e, taskInput, taskSubmitButton, taskSelect) => {
 
   if (taskInput.value.trim()) {
     const taskText = taskInput.value.trim();
-    const tasks = addTask(taskText);
+    const importance = handleTaskSelect(e, taskSelect);
+    const tasks = addTask(taskText, importance);
 
     saveTasks(username, tasks);
 
     taskInput.value = '';
 
     const newTask = tasks[tasks.length - 1];
-
     const newTaskRow = addTaskRow(newTask, tasks.length);
-    const select = handleTaskSelect(e, taskSelect);
-    console.log('select: ', select);
-    newTaskRow.className = select;
+
+    newTaskRow.className = IMPORTANCE_CLASSES[newTask.importance] ||
+      IMPORTANCE_CLASSES[TASK_IMPORTANCES[0]];
     updateRowNumbers();
     handleTaskInput({ target: taskInput }, taskSubmitButton);
   }
@@ -93,12 +98,18 @@ const handleTaskComplete = e => {
   const taskId = row.dataset.id;
   const updatedTask = completeTask(taskId);
 
-  updateTaskRow(taskId, updatedTask.status);
-
   const button = row.querySelector('.btn-success');
   button.textContent = updatedTask.status === 'Выполнена' ?
     buttonLabels[2] :
     buttonLabels[1];
+
+  if (updatedTask.status === 'Выполнена') {
+    row.className = 'table-success';
+  } else {
+    row.className = IMPORTANCE_CLASSES[updatedTask.importance] || IMPORTANCE_CLASSES[TASK_IMPORTANCES[0]];
+  }
+
+  updateTaskRow(taskId);
 };
 
 const handleTaskEdit = e => {
@@ -122,7 +133,6 @@ const handleTaskEdit = e => {
 
     const username = getCurrentUser();
     const tasks = getTasks(username);
-
     const taskIndex = tasks.findIndex(task => task.id === taskId);
 
     if (taskIndex !== -1) {

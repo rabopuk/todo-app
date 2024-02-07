@@ -1,25 +1,39 @@
+/* eslint-disable max-len */
+/* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 import { getElements } from './DOM.js';
+import { IMPORTANCE_CLASSES, TASK_IMPORTANCES } from './control.js';
 import { createTaskRow } from './elements.js';
+import { getCurrentUser, getTasks } from './storage.js';
 
 export const addTaskRow = (task, rowIndex) => {
   const { table } = getElements();
-  const row = createTaskRow(task.task, task.status, rowIndex + 1, task.id);
+  const row = createTaskRow(
+    task.task,
+    task.status,
+    rowIndex + 1,
+    task.id,
+    task.importance,
+  );
 
   table.append(row);
 
   return row;
 };
 
-export const updateTaskRow = (taskId, status) => {
+export const updateTaskRow = (taskId) => {
+  const tasks = getTasks(getCurrentUser());
+  const task = tasks.find(task => task.id === taskId);
   const row = document.querySelector(`.table tbody tr[data-id="${taskId}"]`);
   const statusCell = row.children[2];
   const taskCell = row.children[1];
 
-  statusCell.textContent = status;
-  row.className = status === 'Выполнена' ? 'table-success' : 'table-light';
+  statusCell.textContent = task.status;
+  row.className = task.status === 'Выполнена' ?
+    'table-success' :
+    IMPORTANCE_CLASSES[task.importance] || IMPORTANCE_CLASSES[TASK_IMPORTANCES[0]];
 
-  if (status === 'Выполнена') {
+  if (task.status === 'Выполнена') {
     taskCell.style.textDecoration = 'line-through';
   } else {
     taskCell.style.textDecoration = 'none';
@@ -49,7 +63,7 @@ export const renderTasks = (tasks) => {
   table.innerHTML = '';
 
   const rows = tasks.map((task, index) =>
-    createTaskRow(task.task, task.status, index + 1, task.id));
+    createTaskRow(task.task, task.status, index + 1, task.id, task.importance));
 
   table.append(...rows);
 };

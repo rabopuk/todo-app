@@ -1,10 +1,13 @@
+/* eslint-disable max-len */
 /* eslint-disable object-curly-spacing */
 import { getCurrentUser, getTasks, saveTasks } from './storage.js';
 import { generateId } from './utils.js';
 
 const TASK_STATUSES = ['Не выполнена', 'Выполнена'];
+export const TASK_IMPORTANCES = ['Обычная', 'Важная', 'Срочная'];
+export const IMPORTANCE_CLASSES = ['table-light', 'table-warning', 'table-danger'];
 
-export const addTask = task => {
+export const addTask = (task, importance) => {
   const username = getCurrentUser();
   const tasks = getTasks(username);
 
@@ -12,12 +15,13 @@ export const addTask = task => {
     id: generateId(),
     task,
     status: TASK_STATUSES[0],
+    importance,
   };
 
-  tasks.push(newTask);
-  saveTasks(username, tasks);
+  const updatedTasks = [...tasks, newTask];
+  saveTasks(username, updatedTasks);
 
-  return tasks;
+  return updatedTasks;
 };
 
 export const completeTask = (taskId) => {
@@ -25,9 +29,7 @@ export const completeTask = (taskId) => {
   const taskIndex = tasks.findIndex(task => task.id === taskId);
 
   if (taskIndex !== -1) {
-    tasks[taskIndex].status = tasks[taskIndex].status === 'Выполнена' ?
-      'Не выполнена' :
-      'Выполнена';
+    tasks[taskIndex].status = tasks[taskIndex].status === 'Выполнена' ? 'Не выполнена' : 'Выполнена';
 
     saveTasks(getCurrentUser(), tasks);
 
@@ -37,8 +39,8 @@ export const completeTask = (taskId) => {
 
 export const deleteTask = id => {
   const username = getCurrentUser();
-  let tasks = getTasks(username);
+  const tasks = getTasks(username);
 
-  tasks = tasks.filter(task => task.id !== id);
-  saveTasks(username, tasks);
+  const updatedTasks = tasks.filter(task => task.id !== id);
+  saveTasks(username, updatedTasks);
 };

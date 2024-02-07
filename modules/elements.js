@@ -1,6 +1,8 @@
+/* eslint-disable object-curly-spacing */
 /* eslint-disable max-len */
 /* eslint-disable indent */
-/* eslint-disable object-curly-spacing */
+import { IMPORTANCE_CLASSES, TASK_IMPORTANCES } from './control.js';
+
 export const buttonLabels = ['Удалить', 'Завершить', 'Отменить', 'Редактировать'];
 
 const createElementWithClass = (type, className) => {
@@ -90,8 +92,16 @@ const createForm = () => {
   return { form, input, saveButton, clearButton };
 };
 
-export const createTaskRow = (task, status, id, taskId) => {
-  const row = createElementWithClass('tr', status === 'Выполнена' ? 'table-success' : 'table-light');
+export const createTaskRow = (task, status, id, taskId, importance) => {
+  const row = createElementWithClass('tr', '');
+  row.dataset.id = taskId;
+
+  if (status === 'Выполнена') {
+    row.className = 'table-success';
+  } else {
+    row.className = IMPORTANCE_CLASSES[importance] || IMPORTANCE_CLASSES[TASK_IMPORTANCES[0]];
+  }
+
   const taskCell = createElementWithClass('td', '');
 
   taskCell.textContent = task;
@@ -168,11 +178,11 @@ export const createTodoApp = () => {
   heading.textContent = 'Todo App';
   todoApp.append(heading);
 
-  const formElements = createForm();
-  todoApp.append(formElements.form);
+  const { form, input } = createForm();
+  todoApp.append(form);
 
   const table = createTable();
   todoApp.append(table);
 
-  return { todoApp, form: formElements.form, input: formElements.input };
+  return { todoApp, form, input };
 };
