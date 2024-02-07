@@ -1,9 +1,7 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable max-len */
 /* eslint-disable indent */
-import { IMPORTANCE_CLASSES, TASK_IMPORTANCES } from './control.js';
-
-export const buttonLabels = ['Удалить', 'Завершить', 'Отменить', 'Редактировать'];
+import { IMPORTANCE_CLASSES, TASK_IMPORTANCES, buttonLabels } from './constants.js';
 
 const createElementWithClass = (type, className) => {
   const element = document.createElement(type);

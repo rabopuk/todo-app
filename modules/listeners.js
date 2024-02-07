@@ -2,8 +2,8 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 import { getElements } from './DOM.js';
-import { IMPORTANCE_CLASSES, TASK_IMPORTANCES, addTask, completeTask, deleteTask } from './control.js';
-import { buttonLabels } from './elements.js';
+import { IMPORTANCE_CLASSES, TASK_IMPORTANCES, buttonLabels } from './constants.js';
+import { addTask, completeTask, deleteTask } from './control.js';
 import { closeModal } from './modal.js';
 import { addTaskRow, deleteTaskRow, renderTasks, updateRowNumbers, updateTaskRow } from './render.js';
 import {

@@ -1,11 +1,8 @@
 /* eslint-disable max-len */
 /* eslint-disable object-curly-spacing */
+import { TASK_STATUSES } from './constants.js';
 import { getCurrentUser, getTasks, saveTasks } from './storage.js';
 import { generateId } from './utils.js';
-
-const TASK_STATUSES = ['Не выполнена', 'Выполнена'];
-export const TASK_IMPORTANCES = ['Обычная', 'Важная', 'Срочная'];
-export const IMPORTANCE_CLASSES = ['table-light', 'table-warning', 'table-danger'];
 
 export const addTask = (task, importance) => {
   const username = getCurrentUser();

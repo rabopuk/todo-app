@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 import { getElements } from './DOM.js';
-import { IMPORTANCE_CLASSES, TASK_IMPORTANCES } from './control.js';
+import { IMPORTANCE_CLASSES, TASK_IMPORTANCES } from './constants.js';
 import { createTaskRow } from './elements.js';
 import { getCurrentUser, getTasks } from './storage.js';
 
