@@ -27,6 +27,7 @@ export const getTasks = username => {
 
 export const addTaskToStorage = (username, task) => {
   const tasks = getTasks(username);
+
   tasks.push(task);
   saveTasks(username, tasks);
 };

@@ -2,6 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 const headers = ['№', 'Задача', 'Статус', 'Действия'];
+export const buttonLabels = ['Удалить', 'Завершить', 'Отменить', 'Редактировать'];
 
 export const createButton = (type, className, id, text) => {
   const button = document.createElement('button');
@@ -51,7 +52,12 @@ const createForm = () => {
     'Сохранить',
   );
 
-  const clearButton = createButton('reset', 'btn btn-warning', 'clearBtn', 'Очистить');
+  const clearButton = createButton(
+    'reset',
+    'btn btn-warning',
+    'clearBtn',
+    'Очистить',
+  );
 
   form.append(label);
   form.append(saveButton);
@@ -65,18 +71,33 @@ export const createTaskRow = (task, status, id, taskId) => {
   const taskCell = document.createElement('td');
 
   taskCell.textContent = task;
+  taskCell.contentEditable = 'false';
+
   if (status === 'Выполнена') {
     taskCell.style.textDecoration = 'line-through';
   }
 
   row.className = status === 'Выполнена' ? 'table-success' : 'table-light';
   row.dataset.id = taskId;
+
+  const deleteButton = createButton('button', 'btn btn-danger', '', buttonLabels[0]);
+
+  const completeButton = createButton(
+    'button',
+    'btn btn-success',
+    '',
+    status === 'Выполнена' ? buttonLabels[2] : buttonLabels[1],
+  );
+
+  const editButton = createButton('button', 'btn btn-warning btn-edit', '', buttonLabels[3]);
+
   row.innerHTML = `
     <td>${id}</td>
     <td>${status}</td>
     <td>
-      ${createButton('button', 'btn btn-danger', '', 'Удалить').outerHTML}
-      ${createButton('button', 'btn btn-success', '', 'Завершить').outerHTML}
+      ${deleteButton.outerHTML}
+      ${completeButton.outerHTML}
+      ${editButton.outerHTML}
     </td>
   `;
 

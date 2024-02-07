@@ -44,8 +44,10 @@ export const renderTasks = (tasks) => {
   const table = document.querySelector('.table tbody');
 
   table.innerHTML = '';
+
   tasks.forEach((task, index) => {
     const row = createTaskRow(task.task, task.status, index + 1, task.id);
+
     table.append(row);
   });
 };

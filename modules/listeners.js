@@ -2,6 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 import { addTask, completeTask, deleteTask } from './control.js';
+import { buttonLabels } from './elements.js';
 import { closeModal } from './modal.js';
 import { addTaskRow, deleteTaskRow, renderTasks, updateRowNumbers, updateTaskRow } from './render.js';
 import {
@@ -19,6 +20,7 @@ const handleModalClick = (e, modal) => {
 
 const handleCloseButtonClick = (e, modal) => {
   e.stopPropagation();
+
   closeModal(modal);
 };
 
@@ -32,6 +34,14 @@ const handleTaskInput = (e, taskSubmitButton) => {
   taskSubmitButton.disabled = !e.target.value.trim();
 };
 
+const handleClearButton = (e, taskInput, taskSubmitButton) => {
+  e.preventDefault();
+
+  taskInput.value = '';
+
+  taskSubmitButton.disabled = true;
+};
+
 const handleNameSubmit = (e, nameInput, modal) => {
   e.preventDefault();
 
@@ -41,7 +51,7 @@ const handleNameSubmit = (e, nameInput, modal) => {
     setCurrentUser(username);
 
     const appTitle = document.getElementById('app-title');
-    appTitle.textContent = `Todo List for ${username}`;
+    appTitle.textContent = `Привет, ${username}! Твой список дел:`;
 
     renderTasks(getTasks(username));
     closeModal(modal);
@@ -55,7 +65,6 @@ const handleTaskSubmit = (e, taskInput, taskSubmitButton) => {
 
   if (taskInput.value.trim() !== '') {
     const taskText = taskInput.value.trim();
-
     const tasks = addTask(taskText);
 
     saveTasks(username, tasks);
@@ -75,23 +84,58 @@ const handleTaskComplete = e => {
 
   const row = e.target.closest('.table-light, .table-success');
   const taskId = row.dataset.id;
-
   const updatedTask = completeTask(taskId);
+
   updateTaskRow(taskId, updatedTask.status);
 
   const button = row.querySelector('.btn-success');
   button.textContent = updatedTask.status === 'Выполнена' ?
-    'Отменить' :
-    'Завершить';
+    buttonLabels[2] :
+    buttonLabels[1];
+};
+
+const handleTaskEdit = e => {
+  if (!e.target.classList.contains('btn-edit')) {
+    return;
+  }
+
+  e.stopPropagation();
+
+  const row = e.target.closest('.table-light, .table-success');
+  const taskId = row.dataset.id;
+  const taskCell = row.querySelector('td:nth-child(2)');
+
+  if (e.target.textContent === 'Редактировать') {
+    taskCell.contentEditable = 'true';
+    e.target.textContent = 'Сохранить';
+    taskCell.focus();
+  } else {
+    taskCell.contentEditable = 'false';
+    e.target.textContent = 'Редактировать';
+
+    const username = getCurrentUser();
+    const tasks = getTasks(username);
+
+    const taskIndex = tasks.findIndex(task => task.id === taskId);
+
+    if (taskIndex !== -1) {
+      tasks[taskIndex].task = taskCell.textContent;
+    }
+
+    saveTasks(username, tasks);
+  }
 };
 
 const handleTaskDelete = e => {
   e.stopPropagation();
 
   const taskId = e.target.closest('.table-light, .table-success').dataset.id;
+  const userConfirmed = confirm('Вы уверены, что хотите удалить эту задачу?');
 
-  deleteTask(taskId);
-  deleteTaskRow(taskId);
+  if (userConfirmed) {
+    deleteTask(taskId);
+    deleteTaskRow(taskId);
+  }
 };
 
 const addEventListener = (element, eventType, handler) =>
@@ -104,6 +148,7 @@ export const bindEvents = (
   nameInput,
   nameSubmitButton,
   taskSubmitButton,
+  clearButton,
 ) => {
   addEventListener(modal, 'click', e =>
     handleModalClick(e, modal));
@@ -116,6 +161,9 @@ export const bindEvents = (
 
   addEventListener(taskInput, 'input', e =>
     handleTaskInput(e, taskSubmitButton));
+
+  addEventListener(clearButton, 'click', e =>
+    handleClearButton(e, taskInput, taskSubmitButton));
 
   addEventListener(nameSubmitButton, 'click', e =>
     handleNameSubmit(e, nameInput, modal));
@@ -132,6 +180,10 @@ export const bindEvents = (
     if (e.target.classList.contains('btn-danger')) {
       const taskId = e.target.closest('.table-light, .table-success').dataset.id;
       handleTaskDelete(e, taskId);
+    }
+
+    if (e.target.classList.contains('btn-warning')) {
+      handleTaskEdit(e);
     }
   });
 

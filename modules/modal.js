@@ -28,7 +28,7 @@ export const createModal = (content) => {
   modalTitle.textContent = content;
   modalHeader.append(modalTitle);
 
-  const closeButton = createButton('button', 'btn-close', '');
+  const closeButton = createButton('button', 'btn-close');
   closeButton.setAttribute('data-bs-dismiss', 'modal');
   modalHeader.append(closeButton);
 

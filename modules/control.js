@@ -30,6 +30,7 @@ export const completeTask = (taskId) => {
       'Выполнена';
 
     saveTasks(getCurrentUser(), tasks);
+
     return tasks[taskIndex];
   }
 };
